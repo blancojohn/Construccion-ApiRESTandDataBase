@@ -17,3 +17,6 @@ pymysql = "*"
 
 [requires]
 python_version = "3.11"
+
+[scripts]
+start="python src/app.py"
