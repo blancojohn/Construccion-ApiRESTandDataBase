@@ -6,7 +6,7 @@ db = SQLAlchemy()
 
 class Planet(db.Model): #Contiene los planetas de StarWars.
     __tablename__= 'planets'
-    id= db.Column(db.Integer, primary_key= True)
+    id= db.Column(db.Integer, primary_key=True)
     name= db.Column(db.String(200), nullable= False)
     url= db.Column(db.String(300), nullable= False)
     favorites_p= db.relationship('Favorite_Planet', backref= 'planet')
