@@ -1,7 +1,7 @@
 from flask import Blueprint, request, jsonify
 api = Blueprint('api', __name__)
 
-from models import db, People, User, Favorite_People
+from models import db, People,Planet, User, Favorite_People
 
 #OPERACIONES DE CHARACTERS
 
@@ -37,6 +37,42 @@ def add_characters():
     db.session.commit()
 
     return jsonify(people.to_dict()), 201
+
+#OPERACIONES DE PLANETAS
+
+@api.route('/planets', methods=['GET'])
+def get_planets():
+    planets= Planet.query.all()
+    planets= list(map(lambda planets: planets.to_dict(), planets))
+    return jsonify(planets), 200
+
+@api.route('/planets/<int:planet_id>', methods=['GET'])
+def get_planet(planet_id):
+    planet= Planet.query.filter_by(id= planet_id).first()
+    result= planet.to_dict()
+    return jsonify(result), 200
+
+@api.route('/planet', methods=['POST'])
+def add_planets():
+    datos = request.get_json()
+    print(datos['name'])
+    print(datos['url'])
+    
+    name = request.json.get('name')
+    url = request.json.get('url')
+    print(name)
+    print(url)
+
+    planet= Planet()
+    planet.name= name
+    planet.url= url
+
+    db.session.add(planet)
+    db.session.commit()
+
+    return jsonify(planet.to_dict()), 201
+
+#OPERACIONES DE USUARIO
 
 @api.route('/users', methods=['GET'])
 def get_users():
