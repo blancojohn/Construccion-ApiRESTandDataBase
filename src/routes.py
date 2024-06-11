@@ -1,7 +1,7 @@
 from flask import Blueprint, request, jsonify
 api = Blueprint('api', __name__)
 
-from models import db, People,Planet, User, Favorite_People
+from models import db, People, Favorite_People, Planet, Favorite_Planet, User 
 
 #OPERACIONES DE CHARACTERS
 
@@ -38,6 +38,18 @@ def add_characters():
 
     return jsonify(people.to_dict()), 201
 
+@api.route('/favorite/people/<int:people_id>', methods=['POST'])
+def add_favorite_people(people_id):
+ 
+    user_id= 1
+    favorites_people= Favorite_People()  
+    favorites_people.user_id= user_id
+    favorites_people.people_id= people_id
+
+    db.session.add(favorites_people) 
+    db.session.commit()
+    return jsonify(favorites_people.to_dict()), 200
+
 #OPERACIONES DE PLANETAS
 
 @api.route('/planets', methods=['GET'])
@@ -72,6 +84,18 @@ def add_planets():
 
     return jsonify(planet.to_dict()), 201
 
+@api.route('/favorite/planet/<int:planet_id>', methods=['POST'])
+def add_favorite_planet(planet_id):
+ 
+    user_id= 1
+    favorites_planets= Favorite_Planet()  
+    favorites_planets.user_id= user_id
+    favorites_planets.planet_id= planet_id
+
+    db.session.add(favorites_planets) 
+    db.session.commit()
+    return jsonify(favorites_planets.to_dict()), 200
+
 #OPERACIONES DE USUARIO
 
 @api.route('/users', methods=['GET'])
@@ -85,5 +109,13 @@ def get_favorites_users(username):
     user= User.query.filter_by(username= username).first()
     result= user.to_dict()
     return jsonify(result), 200
-    favorites_users= Favorite_People.query.all()
-    return jsonify(favorites_users), 200
+
+@api.route('/user/favorites', methods=['GET'])
+def user_favorites():
+    user_id= 1
+    favorites_planets= Favorite_Planet.query.filter_by(user_id= user_id)
+    favorites_characters= Favorite_People.query.filter_by(user_id= user_id)
+    results_planets= favorites_planets.to_dict()
+    results_characters= favorites_characters.to_dict()
+
+    return jsonify(results_planets, results_characters), 200
